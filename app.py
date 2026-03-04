@@ -1,12 +1,12 @@
 import streamlit as st
-import cv2
 import av
+import numpy as np
 from streamlit_webrtc import webrtc_streamer
 from posture_engine import analyze_posture
 import mediapipe as mp
 
 st.title("PostureSense AI")
-st.write("Real-time posture monitoring system")
+st.write("Real-time posture monitoring")
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
@@ -26,26 +26,6 @@ class PostureProcessor:
                 results.pose_landmarks,
                 mp_pose.POSE_CONNECTIONS
             )
-
-        cv2.putText(
-            img,
-            posture_text,
-            (30, 50),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            color,
-            2
-        )
-
-        cv2.putText(
-            img,
-            f"Angle: {int(angle)}",
-            (30, 90),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (255, 255, 255),
-            2
-        )
 
         return av.VideoFrame.from_ndarray(img, format="bgr24")
 
