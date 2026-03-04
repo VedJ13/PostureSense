@@ -1,24 +1,18 @@
-import cv2
-import numpy as np
 import mediapipe as mp
-from mediapipe.tasks.python import vision
-from mediapipe.tasks.python import BaseOptions
+import numpy as np
+import cv2
 
-model_path = "pose_landmarker.task"
-
-options = vision.PoseLandmarkerOptions(
-    base_options=BaseOptions(model_asset_path=model_path),
-    running_mode=vision.RunningMode.IMAGE
-)
-
-pose = vision.PoseLandmarker.create_from_options(options)
+mp_pose = mp.solutions.pose
+mp_drawing = mp.solutions.drawing_utils
+pose = mp_pose.Pose()
 
 def analyze_posture(frame):
 
     image = frame.copy()
     h, w, _ = image.shape
 
-    results = pose.process(image)
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    results = pose.process(image_rgb)
 
     posture_text = "Detecting..."
     color = (255,255,255)
@@ -32,7 +26,6 @@ def analyze_posture(frame):
         right_shoulder = landmarks[12]
         left_hip = landmarks[23]
         right_hip = landmarks[24]
-        nose = landmarks[0]
 
         left_shoulder_x = int(left_shoulder.x * w)
         left_shoulder_y = int(left_shoulder.y * h)
@@ -45,8 +38,6 @@ def analyze_posture(frame):
 
         right_hip_x = int(right_hip.x * w)
         right_hip_y = int(right_hip.y * h)
-
-        nose_y = int(nose.y * h)
 
         shoulder_mid_x = int((left_shoulder_x + right_shoulder_x) / 2)
         shoulder_mid_y = int((left_shoulder_y + right_shoulder_y) / 2)
@@ -82,7 +73,10 @@ def analyze_posture(frame):
             posture_text = "Bad Posture"
             color = (0,0,255)
 
+        mp_drawing.draw_landmarks(
+            image,
+            results.pose_landmarks,
+            mp_pose.POSE_CONNECTIONS
+        )
 
     return posture_text, color, angle, results
-
-
