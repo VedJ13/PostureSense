@@ -5,6 +5,9 @@ from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
 from posture_engine import analyze_posture
 import mediapipe as mp
 
+st.write("MediaPipe version:", mp.__version__)
+st.write("Has solutions:", hasattr(mp, "solutions"))
+
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
@@ -51,4 +54,5 @@ class PostureProcessor(VideoProcessorBase):
 webrtc_streamer(
     key="posture",
     video_processor_factory=PostureProcessor
+
 )
