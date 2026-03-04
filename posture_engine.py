@@ -1,9 +1,7 @@
 import mediapipe as mp
 import numpy as np
-import cv2
 
 mp_pose = mp.solutions.pose
-mp_drawing = mp.solutions.drawing_utils
 pose = mp_pose.Pose()
 
 def analyze_posture(frame):
@@ -11,11 +9,13 @@ def analyze_posture(frame):
     image = frame.copy()
     h, w, _ = image.shape
 
-    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    # convert BGR -> RGB without OpenCV
+    image_rgb = image[:, :, ::-1]
+
     results = pose.process(image_rgb)
 
     posture_text = "Detecting..."
-    color = (255,255,255)
+    color = (255, 255, 255)
     angle = 0
 
     if results.pose_landmarks:
@@ -72,11 +72,5 @@ def analyze_posture(frame):
         else:
             posture_text = "Bad Posture"
             color = (0,0,255)
-
-        mp_drawing.draw_landmarks(
-            image,
-            results.pose_landmarks,
-            mp_pose.POSE_CONNECTIONS
-        )
 
     return posture_text, color, angle, results
