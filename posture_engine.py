@@ -1,3 +1,4 @@
+import cv2
 import mediapipe as mp
 import numpy as np
 
@@ -75,3 +76,4 @@ def analyze_posture(frame):
 
 
     return posture_text, color, angle, results
+
