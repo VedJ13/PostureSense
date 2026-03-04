@@ -1,7 +1,7 @@
 import mediapipe as mp
 import numpy as np
 
-mp_pose = mp.solutions.pose
+mp_pose = mp.solutions.pose if hasattr(mp, "solutions") else mp.python.solutions.pose
 pose = mp_pose.Pose()
 
 def analyze_posture(frame):
@@ -72,5 +72,6 @@ def analyze_posture(frame):
         else:
             posture_text = "Bad Posture"
             color = (0,0,255)
+
 
     return posture_text, color, angle, results
