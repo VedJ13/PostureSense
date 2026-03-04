@@ -1,9 +1,17 @@
 import cv2
-import mediapipe as mp
 import numpy as np
+import mediapipe as mp
+from mediapipe.tasks.python import vision
+from mediapipe.tasks.python import BaseOptions
 
-mp_pose = mp.solutions.pose if hasattr(mp, "solutions") else mp.python.solutions.pose
-pose = mp_pose.Pose()
+model_path = "pose_landmarker.task"
+
+options = vision.PoseLandmarkerOptions(
+    base_options=BaseOptions(model_asset_path=model_path),
+    running_mode=vision.RunningMode.IMAGE
+)
+
+pose = vision.PoseLandmarker.create_from_options(options)
 
 def analyze_posture(frame):
 
@@ -76,4 +84,5 @@ def analyze_posture(frame):
 
 
     return posture_text, color, angle, results
+
 
